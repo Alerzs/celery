@@ -1,0 +1,4 @@
+
+1) add celery.py to the main app
+2) add thisto setting.py  CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+3) add tasks.pt to your app and use @shared_task decorator to define it as a task
