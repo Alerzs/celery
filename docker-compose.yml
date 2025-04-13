@@ -23,8 +23,9 @@ services:
     container_name: django
     build: .
     command: >
-      sh -c "python3 manage.py migrate &&
-             python3 manage.py runserver 0.0.0.0:8000"
+      sh -c "cd ./celerytst &&
+            python3 manage.py migrate &&
+            python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -44,6 +45,7 @@ services:
   celery:
     container_name: celery1
     build: .
+    working_dir: /app/celerytst
     command: celery -A celerytst worker --loglevel=info -Q queue1
     volumes:
       - .:/app
@@ -54,11 +56,12 @@ services:
   celery2:
     container_name: celery2
     build:
-      context: ../celeryworker
+      context: ./celeryworker
       dockerfile: Dockerfile
+    working_dir: /app/celeryworker
     command: celery -A celerytask worker --loglevel=info -Q queue2
     volumes:
-      - ../celeryworker:/app
+      - .:/app
     depends_on:
       - web
       - redis
