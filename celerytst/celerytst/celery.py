@@ -5,6 +5,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "celerytst.settings") #gives cel
 app = Celery("celerytst")
 app.config_from_object("django.conf:settings", namespace="CELERY") #search setting for CELERY namespace where settings related to celery has it
 
+app.conf.task_default_rate_limit = '5/m' #setting rate limit 5 tasks per minute
+
 app.conf.task_routes = {
     'newapp.tasks.task1': {'queue':'queue1'}, 
     'newapp.tasks.task2': {'queue':'queue2'},
