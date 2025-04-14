@@ -46,25 +46,25 @@ services:
     container_name: celery1
     build: .
     working_dir: /app/celerytst
-    command: celery -A celerytst worker --loglevel=info -Q queue1
+    command: celery -A celerytst worker --loglevel=info -Q queue1,queue2,queue3
     volumes:
       - .:/app
     depends_on:
       - web
       - redis
 
-  celery2:
-    container_name: celery2
-    build:
-      context: ./celeryworker
-      dockerfile: Dockerfile
-    working_dir: /app/celeryworker
-    command: celery -A celerytask worker --loglevel=info -Q queue2
-    volumes:
-      - .:/app
-    depends_on:
-      - web
-      - redis
+  # celery2:
+  #   container_name: celery2
+  #   build:
+  #     context: ./celeryworker
+  #     dockerfile: Dockerfile
+  #   working_dir: /app/celeryworker
+  #   command: celery -A celerytask worker --loglevel=info -Q queue2
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - web
+  #     - redis
 
 volumes:
   postgres_data:
