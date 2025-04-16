@@ -1,5 +1,5 @@
-from celerytst.celery import app
+# from celerytst.celery import app
 
-@app.task(queue='priority_queue')
-def task1():
-    return
+# @app.task(queue='tasks')
+# def task1():
+#     return
