@@ -1,15 +1,33 @@
 import os
 from celery import Celery
+from time import sleep
+from kombu import Queue ,Exchange
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "celerytst.settings") #gives celery access to project settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "celerytst.settings")
 app = Celery("celerytst")
-app.config_from_object("django.conf:settings", namespace="CELERY") #search setting for CELERY namespace where settings related to celery has it
+app.config_from_object("django.conf:settings", namespace="CELERY") 
 
-app.conf.task_routes = {
-    'newapp.tasks.task1': {'queue':'queue1'}, 
-    'newapp.tasks.task2': {'queue':'queue2'},
-    'newapp.tasks.task3': {'queue':'queue3'},
-    } #setting queue for each task
+app.conf.task_queues = [
+    Queue('tasks', Exchange('tasks'), routing_key='tasks',
+          queue_arguments={'x-max-priority': 10}),
+]
 
-app.autodiscover_tasks() #search for tasks.py in each app and tasks in there
+@app.task(queue='tasks')
+def task1():
+    sleep(3)
+    return
+
+@app.task(queue='tasks')
+def task2():
+    sleep(3)
+    return
+
+
+app.conf.task_acks_late = True
+app.conf.task_queue_max_priority = 10
+app.conf.task_default_priority = 5 #default priority value 
+app.conf.worker_prefetch_multiplier = 1 # how many task can worker get from message broker at once
+app.conf.worker_concurrency = 1 # how many tasks can run at once
+
+app.autodiscover_tasks()
 
