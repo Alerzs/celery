@@ -40,16 +40,16 @@ services:
       - DATABASE_PASSWORD=mypassword
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-      - CELERY_BROKER_URL=redis://redis:6379/0
 
   celery:
     container_name: celery1
     build: .
     working_dir: /app/celerytst
-    command: celery -A celerytst worker --loglevel=info -Q queue1,queue2,queue3
+    command: celery -A celerytst worker --loglevel=info -Q priority_queue
     volumes:
       - .:/app
     depends_on:
+      - rabbitmq
       - web
       - redis
 
@@ -65,6 +65,14 @@ services:
   #   depends_on:
   #     - web
   #     - redis
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
 
 volumes:
   postgres_data:

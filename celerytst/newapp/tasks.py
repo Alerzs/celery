@@ -1,15 +1,5 @@
-from celery import shared_task
-from time import sleep
+from celerytst.celery import app
 
-@shared_task(task_rate_limit= '5/m')
+@app.task(queue='priority_queue')
 def task1():
     return
-
-@shared_task(task_rate_limit= '1/m')
-def task2():
-    return
-
-@shared_task
-def task3():
-    return
-
