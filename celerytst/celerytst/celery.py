@@ -1,5 +1,6 @@
 import os
 from celery import Celery
+from time import sleep
 from kombu import Queue ,Exchange
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "celerytst.settings")
@@ -13,6 +14,12 @@ app.conf.task_queues = [
 
 @app.task(queue='tasks')
 def task1():
+    sleep(3)
+    return
+
+@app.task(queue='tasks')
+def task2():
+    sleep(3)
     return
 
 
