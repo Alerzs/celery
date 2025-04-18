@@ -1,5 +1,6 @@
 import os
 from celery import Celery
+from datetime import timedelta
 from time import sleep
 from kombu import Queue ,Exchange
 
@@ -12,14 +13,17 @@ app.conf.task_queues = [
           queue_arguments={'x-max-priority': 10}),
 ]
 
-@app.task(queue='tasks')
-def task1():
-    sleep(3)
-    return
+app.conf.beat_schedule = {
+    'beat1':{
+        'task':'task1',
+        'schedule':timedelta(seconds=5)
+    }
+}
+
 
 @app.task(queue='tasks')
-def task2():
-    sleep(3)
+def task1():
+    sleep(1)
     return
 
 

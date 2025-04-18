@@ -45,7 +45,7 @@ services:
     container_name: celery1
     build: .
     working_dir: /app/celerytst
-    command: celery -A celerytst worker --loglevel=info -Q tasks
+    command: celery -A celerytst worker --loglevel=info -Q tasks -B
     volumes:
       - .:/app
     depends_on:
